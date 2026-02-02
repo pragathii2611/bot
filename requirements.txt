@@ -1,0 +1,8 @@
+flask
+flask-sqlalchemy
+apscheduler
+selenium
+webdriver-manager
+python-dotenv
+google-generativeai
+pillow
