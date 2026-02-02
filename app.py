@@ -114,6 +114,6 @@ def run_check():
         # Human delay between checking different courts
         if i < len(monitoring_state["courts"]) - 1:
             time.sleep(random.uniform(5, 8))
-
 if __name__ == '__main__':
-    app.run(debug=True, port=5000, use_reloader=False)
+    # ⚠️ host='0.0.0.0' is REQUIRED for Cloud Servers
+    app.run(host='0.0.0.0', port=5000)
