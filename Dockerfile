@@ -1,25 +1,30 @@
 # Use official Python image
 FROM python:3.9-slim
 
-# Install dependencies and Google Chrome
+# 1. Install basic system tools
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     unzip \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
+    curl \
+    --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# 2. Install Google Chrome (Direct Download Method)
+# This avoids the "apt-key" error by downloading the .deb file directly
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && apt-get update \
+    && apt-get install -y ./google-chrome-stable_current_amd64.deb \
+    && rm google-chrome-stable_current_amd64.deb
+
+# 3. Set working directory
 WORKDIR /app
 
-# Copy files
+# 4. Copy project files
 COPY . .
 
-# Install Python libraries
+# 5. Install Python libraries
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run the app
+# 6. Run the app
 CMD ["python", "app.py"]
