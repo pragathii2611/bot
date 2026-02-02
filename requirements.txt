@@ -1,8 +1,9 @@
 flask
-flask-sqlalchemy
-apscheduler
 selenium
 webdriver-manager
+selenium-stealth
+openai
 python-dotenv
-google-generativeai
-pillow
+apscheduler
+Pillow
+requests
