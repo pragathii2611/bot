@@ -7,6 +7,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
 from scraper import check_facility_availability 
+from pytz import timezone  # <--- ADD THIS
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
@@ -98,8 +99,9 @@ def run_check():
         if not monitoring_state["active"]: break
         
         court["status"] = "Scanning..."
-        court["last_checked"] = datetime.now().strftime('%H:%M:%S')
-        
+        sg_time = datetime.now(timezone('Asia/Singapore'))
+        court["last_checked"] = sg_time.strftime('%H:%M:%S')
+
         try:
             slots_found = check_facility_availability(court["url"], monitoring_state["email"])
             
