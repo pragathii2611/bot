@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); /* Light Mesh */
+            min-height: 100vh;
+            transition: background 0.5s ease;
+        }
+
+        .dark body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); /* Dark Mesh */
+        }
+
+        /* The Glass Effect Class */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        .dark .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .dark .glass-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+    </style>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="p-6 md:p-12">
+
+    <div class="max-w-7xl mx-auto flex justify-between items-end mb-10">
+        <div>
+            <h1 class="text-5xl font-extrabold tracking-tight text-slate-800 dark:text-white mb-2">
+                Hunter.
+            </h1>
+            <p class="text-xl text-slate-500 dark:text-slate-400 font-medium">
+                Slots Availability Monitor
+            </p>
+        </div>
+        
+        <button onclick="toggleTheme()" class="glass-panel px-6 py-3 rounded-full font-bold text-sm tracking-wide text-slate-700 dark:text-white hover:scale-105 transition transform">
+            <span id="theme-text">DARK MODE</span>
+        </button>
+    </div>
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <div class="lg:col-span-4 space-y-8">
+            <div class="glass-panel p-8 rounded-3xl">
+                
+                <div class="mb-8">
+                    <label class="block text-sm font-bold uppercase text-slate-500 dark:text-slate-400 mb-3 tracking-wider">
+                        Notification Email
+                    </label>
+                    <input type="email" id="email" placeholder="sample@gmail.com" 
+                           class="glass-input w-full p-4 rounded-2xl text-lg font-medium outline-none focus:ring-4 focus:ring-blue-500/20 transition">
+                </div>
+
+                <div class="mb-10">
+                    <label class="block text-sm font-bold uppercase text-slate-500 dark:text-slate-400 mb-3 tracking-wider">
+                        Target Links
+                    </label>
+                    <textarea id="urls" rows="6" placeholder="Paste OnePA links here..." 
+                           class="glass-input w-full p-4 rounded-2xl text-sm font-mono outline-none focus:ring-4 focus:ring-blue-500/20 transition"></textarea>
+                </div>
+
+                <button onclick="startMonitor()" id="btnStart"
+                        class="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-blue-500/30 transition transform hover:-translate-y-1">
+                    Start Monitoring
+                </button>
+                
+                <button onclick="stopMonitor()" id="btnStop" disabled
+                        class="mt-4 w-full py-5 bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 font-bold text-lg rounded-2xl cursor-not-allowed transition">
+                    Stop
+                </button>
+            </div>
+        </div>
+
+        <div class="lg:col-span-8">
+            <div class="glass-panel p-8 rounded-3xl min-h-[500px] flex flex-col">
+                <div class="flex justify-between items-center mb-8 border-b border-slate-200 dark:border-slate-700 pb-6">
+                    <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Live Status</h2>
+                    <span id="global-status" class="px-4 py-2 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs tracking-widest uppercase">
+                        STANDBY
+                    </span>
+                </div>
+                
+                <div class="overflow-x-auto flex-grow">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-sm font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+                                <th class="pb-4 pl-4">Facility</th>
+                                <th class="pb-4">Last Update</th>
+                                <th class="pb-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statusTableBody" class="text-lg font-semibold">
+                            <tr>
+                                <td colspan="3" class="pt-20 text-center text-slate-400 dark:text-slate-500 text-xl font-medium">
+                                    Ready to scan. Waiting for input...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Theme Manager ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const text = document.getElementById('theme-text');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                text.innerText = "DARK MODE";
+            } else {
+                html.classList.add('dark');
+                text.innerText = "LIGHT MODE";
+            }
+        }
+        
+        // Auto Dark Mode Detection
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-text').innerText = "LIGHT MODE";
+        }
+
+        // --- App Logic ---
+        let pollInterval;
+
+        async function startMonitor() {
+            const email = document.getElementById('email').value;
+            const urlsText = document.getElementById('urls').value;
+            const btnStart = document.getElementById('btnStart');
+            const btnStop = document.getElementById('btnStop');
+            const urlList = urlsText.split('\n').filter(line => line.trim() !== '');
+
+            if (!email || urlList.length === 0) {
+                alert("Please fill in email and at least one link.");
+                return;
+            }
+
+            btnStart.innerText = "Initializing...";
+            btnStart.disabled = true;
+            btnStart.classList.add('opacity-50');
+
+            try {
+                const res = await fetch('/start-monitor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, facility_urls: urlList })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    btnStart.innerText = "Monitoring Active";
+                    btnStop.disabled = false;
+                    btnStop.classList.remove('bg-slate-300', 'text-slate-500', 'cursor-not-allowed', 'dark:bg-slate-700');
+                    btnStop.classList.add('bg-red-500', 'text-white', 'hover:bg-red-600', 'shadow-lg');
+                    
+                    document.getElementById('global-status').innerText = "SYSTEM ACTIVE";
+                    document.getElementById('global-status').className = "px-4 py-2 rounded-full bg-green-500 text-white font-bold text-xs tracking-widest uppercase shadow-green-500/50 shadow-lg";
+                    
+                    pollData();
+                }
+            } catch (e) {
+                alert("Server Connection Failed");
+                btnStart.innerText = "Start Monitoring";
+                btnStart.disabled = false;
+                btnStart.classList.remove('opacity-50');
+            }
+        }
+
+        async function stopMonitor() {
+            await fetch('/stop-monitor', { method: 'POST' });
+            window.location.reload();
+        }
+
+        async function pollData() {
+            clearInterval(pollInterval);
+            pollInterval = setInterval(async () => {
+                const res = await fetch('/status');
+                const data = await res.json();
+                renderTable(data.courts);
+            }, 2000);
+        }
+
+        function renderTable(courts) {
+            const tbody = document.getElementById('statusTableBody');
+            tbody.innerHTML = "";
+            
+            courts.forEach(court => {
+                let statusBadge = `<span class="text-slate-500">Waiting...</span>`;
+                
+                if (court.status.includes("Scanning")) {
+                    statusBadge = `<span class="text-blue-600 dark:text-blue-400 animate-pulse">● Scanning...</span>`;
+                } else if (court.status.includes("FOUND")) {
+                    statusBadge = `<span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 py-1 rounded-lg text-sm font-bold shadow-sm">
+                        ${court.status}
+                    </span>`;
+                } else if (court.status.includes("No Slots")) {
+                    statusBadge = `<span class="text-slate-400 dark:text-slate-500 text-sm">No Slots</span>`;
+                } else if (court.status.includes("Stopped")) {
+                    statusBadge = `<span class="text-red-400 text-sm">Stopped</span>`;
+                }
+
+                const row = `
+                    <tr class="border-b border-slate-100 dark:border-slate-700 hover:bg-white/30 dark:hover:bg-white/5 transition">
+                        <td class="py-5 pl-4 text-slate-700 dark:text-slate-200">${court.name}</td>
+                        <td class="py-5 font-mono text-slate-500 text-sm">${court.last_checked}</td>
+                        <td class="py-5">${statusBadge}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+    </script>
+</body>
+</html>
