@@ -10,16 +10,10 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); /* Light Mesh */
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
             min-height: 100vh;
             transition: background 0.5s ease;
         }
-
-        .dark body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); /* Dark Mesh */
-        }
-
-        /* The Glass Effect Class */
         .glass-panel {
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(20px);
@@ -27,102 +21,164 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
-
+        .dark body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
         .dark .glass-panel {
             background: rgba(30, 41, 59, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             color: white;
         }
-
         .glass-input {
             background: rgba(255, 255, 255, 0.5);
             border: 1px solid rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
         }
-        
         .dark .glass-input {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
         }
+
+        /* CC Checklist */
+        .cc-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.15s;
+            background: rgba(255,255,255,0.4);
+            user-select: none;
+        }
+        .cc-item:hover {
+            border-color: #3b82f6;
+            background: rgba(59,130,246,0.07);
+        }
+        .cc-item.selected {
+            border-color: #2563eb;
+            background: rgba(59,130,246,0.12);
+        }
+        .dark .cc-item {
+            border-color: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+        }
+        .dark .cc-item.selected {
+            border-color: #3b82f6;
+            background: rgba(59,130,246,0.2);
+        }
+        .cc-check {
+            width: 18px; height: 18px;
+            border-radius: 5px;
+            border: 2px solid #d0d0d0;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            transition: all 0.15s;
+        }
+        .cc-item.selected .cc-check {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+        .cc-item.selected .cc-check::after {
+            content: '✓';
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .cc-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #334155;
+        }
+        .dark .cc-name { color: #e2e8f0; }
+        .cc-item.selected .cc-name { color: #1d4ed8; font-weight: 600; }
+        .dark .cc-item.selected .cc-name { color: #93c5fd; }
     </style>
-    <script>
-        tailwind.config = { darkMode: 'class' }
-    </script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
 </head>
 <body class="p-6 md:p-12">
 
     <div class="max-w-7xl mx-auto flex justify-between items-end mb-10">
         <div>
-            <h1 class="text-5xl font-extrabold tracking-tight text-slate-800 dark:text-white mb-2">
-                Hunter.
-            </h1>
-            <p class="text-xl text-slate-500 dark:text-slate-400 font-medium">
-                Slots Availability Monitor
-            </p>
+            <h1 class="text-5xl font-extrabold tracking-tight text-slate-800 dark:text-white mb-2">Hunter.</h1>
+            <p class="text-xl text-slate-500 dark:text-slate-400 font-medium">Badminton Slot Monitor</p>
         </div>
-        
         <button onclick="toggleTheme()" class="glass-panel px-6 py-3 rounded-full font-bold text-sm tracking-wide text-slate-700 dark:text-white hover:scale-105 transition transform">
             <span id="theme-text">DARK MODE</span>
         </button>
     </div>
 
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
-        <div class="lg:col-span-4 space-y-8">
+
+        <!-- Settings Panel -->
+        <div class="lg:col-span-4 space-y-6">
             <div class="glass-panel p-8 rounded-3xl">
-                
+
+                <!-- Email -->
+                <div class="mb-6">
+                    <label class="block text-sm font-bold uppercase text-slate-500 dark:text-slate-400 mb-3 tracking-wider">
+                        Alert Email
+                    </label>
+                    <input type="email" id="email" placeholder="you@gmail.com"
+                           class="glass-input w-full p-4 rounded-2xl text-base font-medium outline-none focus:ring-4 focus:ring-blue-500/20 transition">
+                </div>
+
+                <!-- CC Checklist -->
                 <div class="mb-8">
-                    <label class="block text-sm font-bold uppercase text-slate-500 dark:text-slate-400 mb-3 tracking-wider">
-                        Notification Email
-                    </label>
-                    <input type="email" id="email" placeholder="sample@gmail.com" 
-                           class="glass-input w-full p-4 rounded-2xl text-lg font-medium outline-none focus:ring-4 focus:ring-blue-500/20 transition">
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="block text-sm font-bold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
+                            Community Clubs
+                        </label>
+                        <button onclick="toggleAll()" id="toggleAllBtn"
+                                class="text-xs font-bold text-blue-500 hover:text-blue-700 transition">
+                            Select All
+                        </button>
+                    </div>
+                    <div class="space-y-2 max-h-80 overflow-y-auto pr-1" id="ccList">
+                        <!-- Injected by JS -->
+                    </div>
                 </div>
 
-                <div class="mb-10">
-                    <label class="block text-sm font-bold uppercase text-slate-500 dark:text-slate-400 mb-3 tracking-wider">
-                        Target Links
-                    </label>
-                    <textarea id="urls" rows="6" placeholder="Paste OnePA links here..." 
-                           class="glass-input w-full p-4 rounded-2xl text-sm font-mono outline-none focus:ring-4 focus:ring-blue-500/20 transition"></textarea>
-                </div>
-
+                <!-- Buttons -->
                 <button onclick="startMonitor()" id="btnStart"
-                        class="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-blue-500/30 transition transform hover:-translate-y-1">
+                        class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-base rounded-2xl shadow-lg hover:shadow-blue-500/30 transition transform hover:-translate-y-0.5">
                     Start Monitoring
                 </button>
-                
                 <button onclick="stopMonitor()" id="btnStop" disabled
-                        class="mt-4 w-full py-5 bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 font-bold text-lg rounded-2xl cursor-not-allowed transition">
+                        class="mt-3 w-full py-4 bg-slate-200 dark:bg-slate-700 text-slate-400 font-bold text-base rounded-2xl cursor-not-allowed transition">
                     Stop
                 </button>
+
             </div>
         </div>
 
+        <!-- Status Panel -->
         <div class="lg:col-span-8">
             <div class="glass-panel p-8 rounded-3xl min-h-[500px] flex flex-col">
                 <div class="flex justify-between items-center mb-8 border-b border-slate-200 dark:border-slate-700 pb-6">
                     <h2 class="text-3xl font-bold text-slate-800 dark:text-white">Live Status</h2>
-                    <span id="global-status" class="px-4 py-2 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs tracking-widest uppercase">
+                    <span id="global-status"
+                          class="px-4 py-2 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 font-bold text-xs tracking-widest uppercase">
                         STANDBY
                     </span>
                 </div>
-                
+
                 <div class="overflow-x-auto flex-grow">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="text-sm font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
-                                <th class="pb-4 pl-4">Facility</th>
-                                <th class="pb-4">Last Update</th>
+                            <tr class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+                                <th class="pb-4 pl-2">Facility</th>
+                                <th class="pb-4">Last Checked</th>
                                 <th class="pb-4">Status</th>
                             </tr>
                         </thead>
-                        <tbody id="statusTableBody" class="text-lg font-semibold">
+                        <tbody id="statusTableBody" class="text-base font-semibold">
                             <tr>
-                                <td colspan="3" class="pt-20 text-center text-slate-400 dark:text-slate-500 text-xl font-medium">
-                                    Ready to scan. Waiting for input...
+                                <td colspan="3" class="pt-20 text-center text-slate-400 dark:text-slate-500 text-lg font-medium">
+                                    Select CCs and start monitoring…
                                 </td>
                             </tr>
                         </tbody>
@@ -130,118 +186,186 @@
                 </div>
             </div>
         </div>
+
     </div>
 
-    <script>
-        // --- Theme Manager ---
-        function toggleTheme() {
-            const html = document.documentElement;
-            const text = document.getElementById('theme-text');
-            
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                text.innerText = "DARK MODE";
+<script>
+    // ── Facilities data ───────────────────────────────────────────────────────
+    const FACILITIES = [
+        { id: "bedokcc_badmintoncourts",       name: "Bedok CC" },
+        { id: "tampinescc_badmintoncourts",     name: "Tampines CC" },
+        { id: "toaPayohcc_badmintoncourts",     name: "Toa Payoh CC" },
+        { id: "woodlandscc_badmintoncourts",    name: "Woodlands CC" },
+        { id: "amkcc_badmintoncourts",          name: "Ang Mo Kio CC" },
+        { id: "jurongwestcc_badmintoncourts",   name: "Jurong West CC" },
+        { id: "clementicc_badmintoncourts",     name: "Clementi CC" },
+        { id: "yishuncc_badmintoncourts",       name: "Yishun CC" },
+        { id: "pasirriscc_badmintoncourts",     name: "Pasir Ris CC" },
+        { id: "serangooncc_badmintoncourts",    name: "Serangoon CC" },
+        { id: "bishan_badmintoncourts",         name: "Bishan CC" },
+        { id: "choaphuacc_badmintoncourts",     name: "Choa Chu Kang CC" },
+    ];
+
+    let selectedIds = new Set();
+
+    // ── Render CC checklist ───────────────────────────────────────────────────
+    function renderCCList() {
+        const list = document.getElementById('ccList');
+        list.innerHTML = FACILITIES.map(f => `
+            <div class="cc-item ${selectedIds.has(f.id) ? 'selected' : ''}"
+                 onclick="toggleCC('${f.id}')">
+                <div class="cc-check"></div>
+                <span class="cc-name">${f.name}</span>
+            </div>`).join('');
+    }
+
+    function toggleCC(id) {
+        selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
+        renderCCList();
+        updateToggleAllBtn();
+    }
+
+    function toggleAll() {
+        if (selectedIds.size === FACILITIES.length) {
+            selectedIds.clear();
+        } else {
+            FACILITIES.forEach(f => selectedIds.add(f.id));
+        }
+        renderCCList();
+        updateToggleAllBtn();
+    }
+
+    function updateToggleAllBtn() {
+        const btn = document.getElementById('toggleAllBtn');
+        btn.textContent = selectedIds.size === FACILITIES.length ? 'Deselect All' : 'Select All';
+    }
+
+    // ── Theme ─────────────────────────────────────────────────────────────────
+    function toggleTheme() {
+        const html = document.documentElement;
+        const text = document.getElementById('theme-text');
+        if (html.classList.contains('dark')) {
+            html.classList.remove('dark');
+            text.innerText = 'DARK MODE';
+        } else {
+            html.classList.add('dark');
+            text.innerText = 'LIGHT MODE';
+        }
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-text').innerText = 'LIGHT MODE';
+    }
+
+    // ── Monitor controls ──────────────────────────────────────────────────────
+    let pollInterval;
+
+    async function startMonitor() {
+        const email = document.getElementById('email').value.trim();
+        const btnStart = document.getElementById('btnStart');
+        const btnStop  = document.getElementById('btnStop');
+
+        if (!email) {
+            alert('Please enter your email address.');
+            return;
+        }
+        if (selectedIds.size === 0) {
+            alert('Please select at least one Community Club.');
+            return;
+        }
+
+        btnStart.innerText = 'Starting…';
+        btnStart.disabled = true;
+        btnStart.classList.add('opacity-60');
+
+        try {
+            const res = await fetch('/start-monitor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, facility_ids: [...selectedIds] }),
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                btnStart.innerText = 'Monitoring Active';
+                btnStop.disabled = false;
+                btnStop.classList.remove('bg-slate-200', 'text-slate-400', 'cursor-not-allowed', 'dark:bg-slate-700');
+                btnStop.classList.add('bg-red-500', 'text-white', 'hover:bg-red-600', 'shadow-lg');
+
+                document.getElementById('global-status').innerText = 'ACTIVE';
+                document.getElementById('global-status').className =
+                    'px-4 py-2 rounded-full bg-green-500 text-white font-bold text-xs tracking-widest uppercase shadow-lg shadow-green-500/40';
+
+                startPolling();
             } else {
-                html.classList.add('dark');
-                text.innerText = "LIGHT MODE";
-            }
-        }
-        
-        // Auto Dark Mode Detection
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-            document.getElementById('theme-text').innerText = "LIGHT MODE";
-        }
-
-        // --- App Logic ---
-        let pollInterval;
-
-        async function startMonitor() {
-            const email = document.getElementById('email').value;
-            const urlsText = document.getElementById('urls').value;
-            const btnStart = document.getElementById('btnStart');
-            const btnStop = document.getElementById('btnStop');
-            const urlList = urlsText.split('\n').filter(line => line.trim() !== '');
-
-            if (!email || urlList.length === 0) {
-                alert("Please fill in email and at least one link.");
-                return;
-            }
-
-            btnStart.innerText = "Initializing...";
-            btnStart.disabled = true;
-            btnStart.classList.add('opacity-50');
-
-            try {
-                const res = await fetch('/start-monitor', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email, facility_urls: urlList })
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    btnStart.innerText = "Monitoring Active";
-                    btnStop.disabled = false;
-                    btnStop.classList.remove('bg-slate-300', 'text-slate-500', 'cursor-not-allowed', 'dark:bg-slate-700');
-                    btnStop.classList.add('bg-red-500', 'text-white', 'hover:bg-red-600', 'shadow-lg');
-                    
-                    document.getElementById('global-status').innerText = "SYSTEM ACTIVE";
-                    document.getElementById('global-status').className = "px-4 py-2 rounded-full bg-green-500 text-white font-bold text-xs tracking-widest uppercase shadow-green-500/50 shadow-lg";
-                    
-                    pollData();
-                }
-            } catch (e) {
-                alert("Server Connection Failed");
-                btnStart.innerText = "Start Monitoring";
+                alert(data.message || 'Failed to start');
+                btnStart.innerText = 'Start Monitoring';
                 btnStart.disabled = false;
-                btnStart.classList.remove('opacity-50');
+                btnStart.classList.remove('opacity-60');
             }
+        } catch (e) {
+            alert('Could not connect to server.');
+            btnStart.innerText = 'Start Monitoring';
+            btnStart.disabled = false;
+            btnStart.classList.remove('opacity-60');
         }
+    }
 
-        async function stopMonitor() {
-            await fetch('/stop-monitor', { method: 'POST' });
-            window.location.reload();
-        }
+    async function stopMonitor() {
+        await fetch('/stop-monitor', { method: 'POST' });
+        clearInterval(pollInterval);
+        window.location.reload();
+    }
 
-        async function pollData() {
-            clearInterval(pollInterval);
-            pollInterval = setInterval(async () => {
-                const res = await fetch('/status');
+    function startPolling() {
+        clearInterval(pollInterval);
+        pollInterval = setInterval(async () => {
+            try {
+                const res  = await fetch('/status');
                 const data = await res.json();
                 renderTable(data.courts);
-            }, 2000);
+            } catch {}
+        }, 2500);
+    }
+
+    // ── Status table ──────────────────────────────────────────────────────────
+    function renderTable(courts) {
+        const tbody = document.getElementById('statusTableBody');
+        if (!courts || courts.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" class="pt-10 text-center text-slate-400">No courts being monitored.</td></tr>`;
+            return;
         }
 
-        function renderTable(courts) {
-            const tbody = document.getElementById('statusTableBody');
-            tbody.innerHTML = "";
-            
-            courts.forEach(court => {
-                let statusBadge = `<span class="text-slate-500">Waiting...</span>`;
-                
-                if (court.status.includes("Scanning")) {
-                    statusBadge = `<span class="text-blue-600 dark:text-blue-400 animate-pulse">● Scanning...</span>`;
-                } else if (court.status.includes("FOUND")) {
-                    statusBadge = `<span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 py-1 rounded-lg text-sm font-bold shadow-sm">
-                        ${court.status}
-                    </span>`;
-                } else if (court.status.includes("No Slots")) {
-                    statusBadge = `<span class="text-slate-400 dark:text-slate-500 text-sm">No Slots</span>`;
-                } else if (court.status.includes("Stopped")) {
-                    statusBadge = `<span class="text-red-400 text-sm">Stopped</span>`;
-                }
+        tbody.innerHTML = courts.map(court => {
+            let badge = `<span class="text-slate-400 text-sm">Waiting…</span>`;
 
-                const row = `
-                    <tr class="border-b border-slate-100 dark:border-slate-700 hover:bg-white/30 dark:hover:bg-white/5 transition">
-                        <td class="py-5 pl-4 text-slate-700 dark:text-slate-200">${court.name}</td>
-                        <td class="py-5 font-mono text-slate-500 text-sm">${court.last_checked}</td>
-                        <td class="py-5">${statusBadge}</td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-            });
-        }
-    </script>
+            if (court.status.includes('Scanning')) {
+                badge = `<span class="text-blue-500 dark:text-blue-400 animate-pulse text-sm">● Scanning…</span>`;
+            } else if (court.status.includes('SLOT')) {
+                badge = `<span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 py-1 rounded-lg text-sm font-bold">
+                    ${court.status}
+                </span>`;
+            } else if (court.status.includes('No slots')) {
+                badge = `<span class="text-slate-400 text-sm">No slots</span>`;
+            } else if (court.status.includes('Error')) {
+                badge = `<span class="text-red-400 text-sm">Error</span>`;
+            } else if (court.status.includes('Stopped')) {
+                badge = `<span class="text-red-300 text-sm">Stopped</span>`;
+            } else if (court.status.includes('Queue')) {
+                badge = `<span class="text-slate-400 text-sm">In queue…</span>`;
+            }
+
+            return `
+            <tr class="border-b border-slate-100 dark:border-slate-700 hover:bg-white/30 dark:hover:bg-white/5 transition">
+                <td class="py-4 pl-2 font-semibold text-slate-700 dark:text-slate-200">${court.name}</td>
+                <td class="py-4 font-mono text-slate-400 text-sm">${court.last_checked}</td>
+                <td class="py-4">${badge}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    renderCCList();
+</script>
 </body>
 </html>
