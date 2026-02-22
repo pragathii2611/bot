@@ -36,7 +36,7 @@ monitoring_state = {
     "courts": []
 }
 
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(timezone=timezone('Asia/Singapore'))
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
